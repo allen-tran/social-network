@@ -5,7 +5,7 @@ import java.util.*;
 
 
 public class Driver {
-    private static final int MIN_AGE = 13;
+    private static; // eroror
     private static final Scanner input = new Scanner(System.in);
     private static DataBase dataBase = FileIO.read();       // the database
     private static Profile myProfile = null;                // the user profile
