@@ -2,7 +2,7 @@ import java.io.*;
 
 public class FileIO {
     private static String workdingDir = System.getProperty("user.dir") + "\\";
-    private static String folderAddress = workdingDir + "database\\";
+    private static String folderAddress = workdingDir + "src\\database\\";
     private static String filename = "database.ser";
 
 
