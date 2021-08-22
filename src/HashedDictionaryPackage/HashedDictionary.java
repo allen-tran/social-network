@@ -1,10 +1,12 @@
 package HashedDictionaryPackage;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
+public class HashedDictionary<K, V> implements DictionaryInterface<K, V>, Serializable {
+
 
     // The dictionary:
 
@@ -53,7 +55,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
         checkSize(tableSize);
 
 
-        // The cast is safe because the new array contains null entries
+    // The cast is safe because the new array contains null entries
 
         @SuppressWarnings("unchecked")
 
@@ -118,6 +120,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end add
 
 
+
     public V remove(K key) {
         checkInitialization();
         V removedValue = null;
@@ -135,6 +138,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end remove
 
 
+
     public V getValue(K key) {
         checkInitialization();
         V result = null;
@@ -149,9 +153,11 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end getValue
 
 
+
     public boolean contains(K key) {
         return getValue(key) != null;
     } // end contains
+
 
 
     public boolean isEmpty() {
@@ -159,9 +165,11 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end isEmpty
 
 
+
     public int getSize() {
         return numberOfEntries;
     } // end getSize
+
 
 
     public final void clear() {
@@ -171,9 +179,11 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end clear
 
 
+
     public Iterator<K> getKeyIterator() {
         return new KeyIterator();
     } // end getKeyIterator
+
 
 
     public Iterator<V> getValueIterator() {
@@ -181,16 +191,23 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end getValueIterator
 
 
-    private int getHashIndex(K key) {
+
+    private int getHashIndex(K key)
+
+    {
 
         int hashIndex = key.hashCode() % hashTable.length;
 
 
-        if (hashIndex < 0) {
+
+        if (hashIndex < 0)
+
+        {
 
             hashIndex = hashIndex + hashTable.length;
 
         } // end if
+
 
 
         return hashIndex;
@@ -198,9 +215,12 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end getHashIndex
 
 
+
     // Precondition: checkInitialization has been called.
 
-    private int probe(int index, K key) {
+    private int probe(int index, K key)
+
+    {
 
         boolean found = false;
 
@@ -209,9 +229,14 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
 //  int increment = 1;          // For quadratic probing **********
 
 
-        while (!found && (hashTable[index] != null)) {
 
-            if (hashTable[index].isIn()) {
+        while ( !found && (hashTable[index] != null) )
+
+        {
+
+            if (hashTable[index].isIn())
+
+            {
 
                 if (key.equals(hashTable[index].getKey()))
 
@@ -225,7 +250,9 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
 
                 // increment = increment + 2;                      // Odd values for quadratic probing **********
 
-            } else // Skip entries that were removed
+            }
+
+            else // Skip entries that were removed
 
             {
 
@@ -234,6 +261,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
                 if (removedStateIndex == -1)
 
                     removedStateIndex = index;
+
 
 
                 index = (index + 1) % hashTable.length;            // Linear probing
@@ -249,7 +277,8 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
         // Assertion: Either key or null is found at hashTable[index]
 
 
-        if (found || (removedStateIndex == -1))
+
+        if (found || (removedStateIndex == -1) )
 
             return index;                                      // Index of either key or null
 
@@ -260,348 +289,260 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end probe
 
 
+
     // Precondition: checkInitialization has been called.
 
-    private int locate(int index, K key) {
+    private int locate(int index, K key)
+
+    {
 
         boolean found = false;
 
 //   int increment = 1;                                    // Quadratic probing **********
 
 
-        while (!found && (hashTable[index] != null)) {
 
-            if (hashTable[index].isIn() && key.equals(hashTable[index].getKey()))
-
+        while ( !found && (hashTable[index] != null) )
+        {
+            if ( hashTable[index].isIn() && key.equals(hashTable[index].getKey()) )
                 found = true;                                   // Key found
-
             else                                               // Follow probe sequence
-
                 index = (index + 1) % hashTable.length;         // Linear probing
-
 //          index = (index + increment) % hashTable.length; // Quadratic probing **********
-
 //          increment = increment + 2;                      // Odd values for quadratic probing **********
-
         } // end while
-
         // Assertion: Either key or null is found at hashTable[index]
-
-
         int result = -1;
-
         if (found)
-
             result = index;
-
-
         return result;
-
     } // end locate
 
 
+
     // Increases the size of the hash table to a prime >= twice its old size.
-
     // In doing so, this method must rehash the table entries.
-
     // Precondition: checkInitialization has been called.
-
-    private void enlargeHashTable() {
-
+    private void enlargeHashTable()
+    {
         TableEntry<K, V>[] oldTable = hashTable;
-
         int oldSize = hashTable.length;
-
         int newSize = getNextPrime(oldSize + oldSize);
-
         checkSize(newSize);
 
-
         // The cast is safe because the new array contains null entries
-
         @SuppressWarnings("unchecked")
-
-        TableEntry<K, V>[] tempTable = (TableEntry<K, V>[]) new TableEntry[newSize]; // Increase size of array
-
+        TableEntry<K, V>[] tempTable = (TableEntry<K, V>[])new TableEntry[newSize]; // Increase size of array
         hashTable = tempTable;
-
         numberOfEntries = 0; // Reset number of dictionary entries, since
-
         // it will be incremented by add during rehash
 
-
         // Rehash dictionary entries from old array to the new and bigger array;
-
         // skip both null locations and removed entries
-
-        for (int index = 0; index < oldSize; index++) {
-
-            if ((oldTable[index] != null) && oldTable[index].isIn())
-
+        for (int index = 0; index < oldSize; index++)
+        {
+            if ( (oldTable[index] != null) && oldTable[index].isIn() )
                 add(oldTable[index].getKey(), oldTable[index].getValue());
-
         } // end for
-
     } // end enlargeHashTable
 
 
+
     // Returns true if lambda > MAX_LOAD_FACTOR for hash table;
-
     // otherwise returns false.
-
-    private boolean isHashTableTooFull() {
-
+    private boolean isHashTableTooFull()
+    {
         return numberOfEntries > MAX_LOAD_FACTOR * hashTable.length;
-
     } // end isHashTableTooFull
 
 
+
     // Returns a prime integer that is >= the given integer.
-
-    private int getNextPrime(int integer) {
-
-// if even, add 1 to make odd
-
-        if (integer % 2 == 0) {
-
+    private int getNextPrime(int integer)
+    {
+        // if even, add 1 to make odd
+        if (integer % 2 == 0)
+        {
             integer++;
-
         } // end if
 
-
-// test odd integers
-
-        while (!isPrime(integer)) {
-
+        // test odd integers
+        while (!isPrime(integer))
+        {
             integer = integer + 2;
-
         } // end while
-
-
         return integer;
-
     } // end getNextPrime
+
 
 
     // Returns true if the given integer is prime.
 
-    private boolean isPrime(int integer) {
-
+    private boolean isPrime(int integer)
+    {
         boolean result;
-
         boolean done = false;
 
-
-// 1 and even numbers are not prime
-
-        if ((integer == 1) || (integer % 2 == 0)) {
-
+        // 1 and even numbers are not prime
+        if ( (integer == 1) || (integer % 2 == 0) )
+        {
             result = false;
-
         }
 
-
-// 2 and 3 are prime
-
-        else if ((integer == 2) || (integer == 3)) {
-
-            result = true;
-
-        } else // integer is odd and >= 5
-
+        // 2 and 3 are prime
+        else if ( (integer == 2) || (integer == 3) )
         {
+            result = true;
+        }
 
+        else // integer is odd and >= 5
+        {
             assert (integer % 2 != 0) && (integer >= 5);
-
-
-// a prime is odd and not divisible by every odd integer up to its square root
-
+            // a prime is odd and not divisible by every odd integer up to its square root
             result = true; // assume prime
-
-            for (int divisor = 3; !done && (divisor * divisor <= integer); divisor = divisor + 2) {
-
+            for (int divisor = 3; !done && (divisor * divisor <= integer); divisor = divisor + 2)
+            {
                 if (integer % divisor == 0) {
-
                     result = false; // divisible; not prime
-
                     done = true;
-
                 } // end if
-
             } // end for
-
         } // end if
-
-
         return result;
-
     } // end isPrime
+
 
 
     // Throws an exception if this object is not initialized.
 
-    private void checkInitialization() {
-
+    private void checkInitialization()
+    {
         if (!initialized)
-
-            throw new SecurityException("HashedDictionary object is not initialized properly.");
-
+            throw new SecurityException ("HashedDictionary object is not initialized properly.");
     } // end checkInitialization
+
 
 
     // Ensures that the client requests a capacity
 
     // that is not too small or too large.
 
-    private void checkCapacity(int capacity) {
-
+    private void checkCapacity(int capacity)
+    {
         if (capacity < DEFAULT_CAPACITY)
-
             capacity = DEFAULT_CAPACITY;
-
         else if (capacity > MAX_CAPACITY)
-
             throw new IllegalStateException("Attempt to create a dictionary " +
-
                     "whose capacity is larger than " +
-
                     MAX_CAPACITY);
-
     } // end checkCapacity
+
 
 
     // Throws an exception if the hash table becomes too large.
 
-    private void checkSize(int size) {
-
+    private void checkSize(int size)
+    {
         if (tableSize > MAX_SIZE)
-
             throw new IllegalStateException("Dictionary has become too large.");
-
     } // end checkSize
 
 
-    private class KeyIterator implements Iterator<K> {
 
+    private class KeyIterator implements Iterator<K>
+    {
         private int currentIndex; // Current position in hash table
-
         private int numberLeft;   // Number of entries left in iteration
 
 
-        private KeyIterator() {
 
+        private KeyIterator()
+        {
             currentIndex = 0;
-
             numberLeft = numberOfEntries;
-
         } // end default constructor
 
 
-        public boolean hasNext() {
 
+        public boolean hasNext()
+        {
             return numberLeft > 0;
-
         } // end hasNext
 
 
-        public K next() {
 
+        public K next()
+        {
             K result;
-
-
-            if (hasNext()) {
-
+            if (hasNext())
+            {
                 // Skip table locations that do not contain a current entry
-
-                while ((hashTable[currentIndex] == null) || hashTable[currentIndex].isRemoved()) {
-
+                while ( (hashTable[currentIndex] == null) || hashTable[currentIndex].isRemoved() )
+                {
                     currentIndex++;
-
                 } // end while
-
-
                 result = hashTable[currentIndex].getKey();
-
                 numberLeft--;
-
                 currentIndex++;
-
-            } else
-
+            }
+            else
                 throw new NoSuchElementException();
-
-
             return result;
-
         } // end next
 
 
-        public void remove() {
 
+        public void remove()
+        {
             throw new UnsupportedOperationException();
-
         } // end remove
-
     } // end KeyIterator
 
 
-    private class ValueIterator implements Iterator<V> {
 
+    private class ValueIterator implements Iterator<V>
+    {
         private int currentIndex;
-
         private int numberLeft;
 
-
-        private ValueIterator() {
-
+        private ValueIterator()
+        {
             currentIndex = 0;
-
             numberLeft = numberOfEntries;
-
         } // end default constructor
 
 
-        public boolean hasNext() {
 
+        public boolean hasNext()
+        {
             return numberLeft > 0;
-
         } // end hasNext
 
 
-        public V next() {
 
+        public V next()
+        {
             V result;
-
-
-            if (hasNext()) {
-
+            if (hasNext())
+            {
                 // Skip table locations that do not contain a current entry
-
-                while ((hashTable[currentIndex] == null) || hashTable[currentIndex].isRemoved()) {
-
+                while ( (hashTable[currentIndex] == null) || hashTable[currentIndex].isRemoved() )
+                {
                     currentIndex++;
-
                 } // end while
-
-
                 result = hashTable[currentIndex].getValue();
-
                 numberLeft--;
-
                 currentIndex++;
-
-            } else
-
+            }
+            else
                 throw new NoSuchElementException();
-
-
             return result;
-
         } // end next
 
 
-        public void remove() {
 
+        public void remove()
+        {
             throw new UnsupportedOperationException();
 
         } // end remove
@@ -609,86 +550,79 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V> {
     } // end ValueIterator
 
 
-    private static class TableEntry<S, T> {
 
+
+
+    private static class TableEntry<S, T> implements Serializable
+    {
         private S key;
-
         private T value;
-
         private States state;                  // Flags whether this entry is in the hash table
-
         private enum States {CURRENT, REMOVED} // Possible values of state
 
-
-        private TableEntry(S searchKey, T dataValue) {
-
+        private TableEntry(S searchKey, T dataValue)
+        {
             key = searchKey;
-
             value = dataValue;
-
             state = States.CURRENT;
-
         } // end constructor
 
 
-        private S getKey() {
 
+        private S getKey()
+        {
             return key;
-
         } // end getKey
 
 
-        private T getValue() {
 
+        private T getValue()
+        {
             return value;
-
         } // end getValue
 
 
-        private void setValue(T newValue) {
 
+        private void setValue(T newValue)
+        {
             value = newValue;
-
         } // end setValue
+
 
 
         // Returns true if this entry is currently in the hash table.
 
-        private boolean isIn() {
-
+        private boolean isIn()
+        {
             return state == States.CURRENT;
-
         } // end isIn
+
 
 
         // Returns true if this entry has been removed from the hash table.
 
-        private boolean isRemoved() {
-
+        private boolean isRemoved()
+        {
             return state == States.REMOVED;
-
         } // end isRemoved
+
 
 
         // Sets the state of this entry to removed.
 
-        private void setToRemoved() {
-
+        private void setToRemoved()
+        {
             key = null;
-
             value = null;
-
             state = States.REMOVED; // Entry not in use, ie deleted from table
-
         } // end setToRemoved
+
 
 
         // Sets the state of this entry to current.
 
         private void setToIn()     // Not used
-
         {
-
             state = States.CURRENT; // Entry in use
 
         } // end setToIn

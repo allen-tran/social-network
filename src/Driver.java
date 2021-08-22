@@ -1,30 +1,22 @@
-/**
- * @author Allen Tran
- * Partners: Yasaman Baher, Luan Truong, Shubham Goswami
- */
-
+// Hoang Phuc Luan Truong (Luan)
 import GraphPackage.LinkedQueue;
-
 import java.text.DecimalFormat;
 import java.util.*;
 
+
 public class Driver {
     private static final int MIN_AGE = 13;
-    private static Scanner input = new Scanner(System.in);
-    private static DataBase dataBase = new DataBase();
-    private static Profile myProfile = null;
+    private static final Scanner input = new Scanner(System.in);
+    private static DataBase dataBase = FileIO.read();       // the database
+    private static Profile myProfile = null;                // the user profile
 
 
-    /*
-    MAIN METHOD
-     */
+    /*****************************
+    ********* MAIN METHOD ********
+    *****************************/
     public static void main(String[] args) {
-        System.out.println("\n");
         boolean exit = false;
-
-        initializeDataBase();
-
-
+        
         while (!exit) {
             exit = signInOption();
             if (!exit)
@@ -33,336 +25,513 @@ public class Driver {
     }
 
 
-    // Create a few accounts in the data base
-    public static void initializeDataBase() {
-
-        // initialize the people's first name
-        String[] names = new String[]{"Alex", "Alice", "Allen", "Luan", "Shubham", "Yasaman", "John",
-                "Steve", "Wanda", "Mia", "Mike", "Mirsaeid", "Jonathan", "Henry", "Thanos", "Tony",
-                "Roger", "Amanda", "Logan", "Kevin"};
-
-        // initialize the people's last names
-        String[] lastNames = new String[]{"A", "B", "Tran", "Truong", "Goswami", "Baher", "Doe",
-                "Rogers", "Maximoff", "Tran", "Pence", "Abol", "X", "X", "X", "Stark", "X", "Waller",
-                "X", "Do"};
-
-        // initialize the passwords for the accounts. I use the same one for all so we don't have to look up.
-        String[] passwords = new String[names.length];
-        Arrays.fill(passwords, "12345");
-
-        // initialize the people's date of birth randomly
-        String[] birthdays = new String[names.length];
-        Random rand = new Random();
-        DecimalFormat myFormat = new DecimalFormat("##");
-        for (int i = 0; i < birthdays.length; i++) {
-            int year = rand.nextInt(2021 - MIN_AGE - 1940) + 1940;
-            int month = rand.nextInt(11) + 1;
-            int dayBound = 31;
-            if (month == 2)
-                dayBound = 28;
-            else if ((month % 2 == 0 && month < 8) || (month % 2 != 0 && month > 8))
-                dayBound = 30;
-            int day = rand.nextInt(dayBound - 1) + 1;
-            birthdays[i] = myFormat.format(month) + "/" + myFormat.format(day) + "/" + year;
-        }
-
-        // create profiles and add them to our data base
-        Profile[] profiles = new Profile[names.length];
-        for (int i = 0; i < names.length; i++) {
-            profiles[i] = new Profile(names[i], lastNames[i], birthdays[i], passwords[i], "Hello, world!");
-            dataBase.add(names[i] + " " + lastNames[i], profiles[i]);
-        }
-
-        // assign friends randomly
-        for (int i = 0; i < names.length * 4; i++)
-            dataBase.createFriendship(profiles[rand.nextInt(names.length)], profiles[rand.nextInt(names.length)]);
-
-        /*for (Profile profile : profiles) {
-            System.out.print("\n");
-            printFriendListOf(profile);
-            System.out.print("\n");
-        }*/
-
-        pressAnyKeyToContinue();
-    }
-
-
-    // The main screen where we will do sign in or create account
+    /***************************************************************************************
+     * Where the user is asked to log in
+     * The user can choose to login directly, or create a new account and login
+     * @return: whether to quit the program or not
+     */
     public static boolean signInOption() {
         boolean exit = false;
         boolean goBackToMainScreen = true;
-
+        /*
+        Main screen is where the users 
+        login, or create account, or exit the program.
+        */
         while (goBackToMainScreen) {
-            // display the main screen and show the users options to sign in
-            System.out.print("1. Log in\n" + "2. Create new account\n" + "3. Exit\n" +
-                    "\n       Please enter an integer to perform action: ");
-            int choice = getInt(3, 1);
-
-
+            Util.clearScreen();
+            Util.makeWordArt("TNetwork", Util.GREEN, '@', false, 130, 20, 18);
+            System.out.println();
+            // display the main screen and show the users their options
+            Util.println("\t\t                                                                  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\n", null);
+            Util.print("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\t\t      1.    LOG IN                    ", Util.PURPLE_BOLD_BRIGHT);
+            Util.println("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\t\t      2.    CREATE NEW ACCOUNT        ", Util.PURPLE_BOLD_BRIGHT);
+            Util.println("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\t\t      3.    EXIT                      ", Util.PURPLE_BOLD_BRIGHT);
+            Util.println("\t\t  ", Util.YELLOW_BG_BRIGHT);
+            Util.println("\t\t", null);
+            Util.println("\t\t                                                                  ", Util.YELLOW_BG_BRIGHT);
+            Util.print("\n\t\tPlease enter your option as an integer: ", Util.GREEN);
+            
+            /*
+            prompt the user for the option they wants.
+            and the perform the corresponding action.
+            */
+            int option = Util.getInt(3, 1);
             // Option 1, sign in to an existing account
-            if (choice == 1) {
-                goBackToMainScreen = login();
-            }
-
-
             // Option 2, create a new account
-            else if (choice == 2) {
-                System.out.print("\n\nLet's create a new account for you!\n");
-
-                System.out.print("\nLet's get started by entering your first name: ");
-                String firstName = input.next();
-                System.out.print("Now please enter your last name: ");
-                String lastName = input.next();
-                String fullName = firstName + " " + lastName;
-
-                String password = setPassword();
-
-                System.out.println("\nPlease enter your day, month, year of birth respectively: ");
-                final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
-                DecimalFormat myFormat = new DecimalFormat("##");
-                System.out.print("Day: ");
-                int day = getInt(31, 1);
-                System.out.print("Month: ");
-                int month = getInt(12, 1);
-                System.out.print("Year: ");
-                int year = getInt(CURRENT_YEAR, CURRENT_YEAR - 100);
-                String dateOfBirth = myFormat.format(month) + "/" + myFormat.format(day) + "/" + year;
-
-                if (CURRENT_YEAR - year < MIN_AGE)
-                    System.out.println("\nSorry, you are under the required age to join social network" +
-                            "\nLet's come back later when you're " + MIN_AGE + " years old, thank you!");
-                else {
-                    dataBase.add(fullName, new Profile(firstName, lastName, dateOfBirth, password, null));
-                    System.out.println("\nCongratulations! Your account is created. Let's try login to your account!");
-                    goBackToMainScreen = login();
-                }
-            }
-
-
             // Option 3, exit the program
-            else {
-                exit = true;
-                goBackToMainScreen = false;
+            switch (option) {
+                case 1 -> goBackToMainScreen = login();
+                case 2 -> goBackToMainScreen = createNewAccount();
+                case 3 -> {
+                    exit = true;
+                    goBackToMainScreen = false;
+                }
             }
         }
         return exit;
     }
 
 
-    // The home screen after we sign in to the program, where you can explore your account
-    public static void showHomeScreen() {
-        boolean done = false;
-        while (!done) {
-            // Show the user what they can do
-            System.out.print("\n\n====================");
-            System.out.print("\n1. Manage your account\n" + "2. Find Someone\n" + "3. Check your friends list\n" +
-                    "4. See people that you may know\n" + "5. See the friend list of a friend\n" + "6. Log out\n");
-            System.out.print("\n      Please enter the action you want to do: ");
-            int action = getInt(6, 1);
 
 
-            ////// Manage Account
-            if (action == 1) {
-                System.out.print("\n1. Update profile" + "\n2. Change your password" + "\n3. Delete account\n");
-                System.out.print("      Please enter the action you want to do next: ");
-                int action2 = getInt(3, 1);
+     /**************************************************************************************
+     * Perform the log in process
+     * prompt the user to enter their account name(not real name), and then look it up
+     * if the account name exists, then prompt for the password
+     * if the password matches the account password, then log the user in
+     * if the password does not match, then check if the user wants to retry, if not, go back to main screen
+     * 
+     * @return whether to go back to the main screen(where users do log in) or not
+     */
+    public static boolean login() {
+        boolean pass = false;
+        do {
+            Util.clearScreen();
+            Util.makeWordArt("LOG  IN", Util.YELLOW, '¶', true, 80, 22, 15);
+            Util.print("\n\nPlease enter your account name: ", Util.GREEN);
+            String accountName = input.nextLine();
+            
+            myProfile = dataBase.logIn(accountName);
+            if (myProfile == null) {
+                if (!Util.yesNoResponse("\n\t⚠ We cannot find your account.\n\tDo you want to re-try? (y/n): "))
+                    return true; // show sign in option if user does not retry
+            }
+            else {
+                boolean match = false;
+                while (!match) {
+                    String password = Util.promptPassword("Please enter your password: ");
 
-                /// Update profile
-                if (action2 == 1) {
-                    Profile oldProfile = myProfile;
-                    System.out.print("\n1. Name\n" + "2. Date of birth\n" + "3. status\n" + "4. change your password\n");
-                    System.out.print("      Please select the option that you want to update: ");
-                    int option = getInt(4, 1);
-
-                    if (option == 1) {
-                        System.out.print("\nPlease enter your new first name: ");
-                        String newFirstName = input.next();
-                        System.out.print("Please enter your new last name: ");
-                        String newLastName = input.next();
-                        myProfile.setFirstName(newFirstName);
-                        myProfile.setLastName(newLastName);
-                        System.out.print("Your name is now set as " + myProfile.getName());
-                    } else if (option == 2) {
-                        System.out.println("\nPlease enter your day, month, year of birth respectively: ");
-                        final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
-                        DecimalFormat myFormat = new DecimalFormat("##");
-                        System.out.print("Day: ");
-                        int day = getInt(31, 1);
-                        System.out.print("Month: ");
-                        int month = getInt(12, 1);
-                        System.out.print("Year: ");
-                        int year = getInt(CURRENT_YEAR, CURRENT_YEAR - 100);
-                        String dateOfBirth = myFormat.format(day) + "/" + myFormat.format(month) + "/" + year;
-                        myProfile.setDateOfBirth(dateOfBirth);
-                        System.out.println("Your date of birth is now successfully set as: " + myProfile.getDateOfBirth());
-                    } else if (option == 3) {
-                        System.out.println("\nTell us what's in your mind, " + myProfile.getFirstName() + ": ");
-                        input.nextLine();
-                        String status = input.nextLine();
-                        myProfile.setStatus(status);
-                        System.out.println("Thanks for sharing!");
-                    }
-                    //dataBase.updateProfile(oldProfile, myProfile);
-                }
-
-                //// Reset Password
-                else if (action2 == 2) {
-                    System.out.print("\nPlease enter your current password first: ");
-                    String password = input.next();
-                    if (password.equals(myProfile.getPassword())) {
-                        String newPassword = setPassword();
-                        myProfile.setPassword(newPassword);
-                        System.out.println("\nYour password is successfully reset!");
-                    } else
-                        System.out.print("Incorrect password! You will be brought back to the main screen.\n\n\n");
-                }
-
-
-                //// Delete account
-                else if (action2 == 3) {
-                    System.out.print("\n\nAre you sure you want to permanently delete your account?" +
-                            "\nPlease enter 'y' or 'n': ");
-                    if (yesNoResponse()) {
-                        System.out.print("\nPlease enter your password to delete your account: ");
-                        String password = input.next();
-                        if (password.equals(myProfile.getPassword())) {
-                            dataBase.remove(myProfile.getName());
-                            done = true;
-                        } else
-                            System.out.print("Incorrect password! You will be brought back to the main screen.\n\n\n");
+                    if (password.equals(myProfile.getPassword()))
+                        pass = match = true;
+                    else {
+                        if (!Util.yesNoResponse("Wrong password! Do you want to re-try? (y/n): "))
+                            return true; // show sign in option if user does not retry
                     }
                 }
             }
-
-
-            ///// Find someone in the social network
-            else if (action == 2) {
-                System.out.print("\nPlease enter the name of the person you want to look for: ");
-                input.nextLine();
-                String lookFor = input.nextLine();
-                System.out.print("\n");
-
-                Profile foundProfile = dataBase.getProfile(lookFor);
-                if (foundProfile != null) {
-                    foundProfile.printProfile();
-                    if (!dataBase.areFriends(myProfile, foundProfile) && !foundProfile.equals(myProfile)) {
-                        System.out.println();
-                        showMutual(myProfile, foundProfile);
-                    }
-                    makeFriend(foundProfile);
-                } else {
-                    System.out.print("\n" + lookFor + " cannot be found in data base\n");
-                }
-            }
-
-
-            ///// See who's in your friend list and search for specific friend
-            else if (action == 3) {
-                System.out.print("\n1. See your friend list" + "\n2. Search for a friend in your friend list");
-                System.out.print("\n        Please enter the action you want to do next: ");
-                int response = getInt(2, 1);
-                if (response == 1) {
-                    if (showFriendList(myProfile))
-                        response = 2;
-                }
-                if (response == 2) {
-                    Profile foundFriend = findPersonInFriendList(myProfile);
-                    if (foundFriend != null) {
-                        foundFriend.printProfile();
-
-                        System.out.print("\n\nDo you want to remove " + foundFriend.getFirstName()
-                                + " from the friend list?" + "\n    Please enter 'y' or 'n': ");
-                        if (yesNoResponse()) {
-                            dataBase.endFriendship(myProfile, foundFriend);
-                            System.out.println(foundFriend.getFirstName() + " is successfully removed from the friend list!\n");
-                        }
-                    }
-                }
-            }
-
-            ////// Check out the people that I may know
-            else if (action == 4) {
-                LinkedQueue<Profile> queue = dataBase.getFriendsOfFriends(myProfile);
-
-                if (!queue.isEmpty()) {
-                    System.out.print("\n\nSome people you may know: \n\n");
-                    while (!queue.isEmpty()) {
-                        Profile personIMayKnow = queue.dequeue();
-                        System.out.print("***  " + personIMayKnow.getName() + "\n");
-                        showMutual(personIMayKnow, myProfile);
-                    }
-                } else {
-                    System.out.print("Sorry, we cannot find any friend recommendation for you!\n");
-                }
-                System.out.println();
-            }
-
-
-            ////// See the friend list of a chosen friend
-            else if (action == 5) {
-                System.out.print("\nPlease enter the name of your friend that you would like to see their friends of: ");
-                input.nextLine();
-                String lookFor = input.nextLine();
-                Profile foundFriend = dataBase.findFriend(myProfile, lookFor);
-                if (foundFriend != null) {
-                    System.out.println("\nHere are " + lookFor + "'s friends: ");
-                    if (showFriendList(foundFriend)) {
-                        Profile found = findPersonInFriendList(foundFriend);
-                        if (found != null) {
-                            System.out.println("\n");
-                            found.printProfile();
-                            makeFriend(found);
-                        }
-                    }
-                }
-            }
-
-            ////// Log out
-            else if (action == 6) {
-                System.out.print("\n\nAre you sure you want to log out?\n" + "  Please enter 'y' or 'n': ");
-                if (yesNoResponse())
-                    done = true;
-            }
-        }
-        pressAnyKeyToContinue();
+        } while (!pass);
+        return false;
     }
 
 
-    public static boolean showFriendList(Profile profile) {
-        System.out.print("\n");
-        if (printFriendListOf(profile)) {
-            System.out.print("\nDo you want to search for a specific person in this list? (y/n): ");
-            return yesNoResponse();
+
+
+    /**************************************************************************************
+     * Create a new account for the user
+     * prompt the user to input their information, including name, account name, password, and birthdate
+     * if account name already exists, ask them to enter a different one
+     * Then create a new profile and add that to the database.
+     * Finally, take the user to the log in process where they log in to their new account.
+     * 
+     * @return whether or not to go back to the main screen(where the users log in)
+     */
+    public static boolean createNewAccount() {
+        Util.clearScreen();
+        Util.makeWordArt("welcome  (●'v'●)", Util.YELLOW, '¶', true, 130, 24, 15);
+        Util.print("\n\t\tLet's create a new account for you!\n", Util.YELLOW);
+        Util.print("\nPlease enter your first name: ", Util.GREEN);
+        String firstName = input.next();
+        Util.print("Please enter your last name: ", Util.GREEN);
+        String lastName = input.next();
+        String fullName = firstName + " " + lastName;
+        String accName;
+        input.nextLine();
+        do {
+            Util.print("Please enter your account name: ", Util.GREEN);
+            accName = input.nextLine();
+
+            if (dataBase.logIn(accName) != null) {
+                if (!Util.yesNoResponse("Your account name already exist! Do you want to retry? (y/n): "))
+                    return true;
+            }
+            else
+                break;
+        } while(true);
+        
+        String password = Util.setPassword();
+
+        Util.println("\nPlease enter your day, month, year of birth respectively: ", Util.GREEN);
+        final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
+        DecimalFormat myFormat = new DecimalFormat("##");
+        Util.print("Day: ", Util.GREEN);
+        int day = Util.getInt(31, 1);
+        Util.print("Month: ", Util.GREEN);
+        int month = Util.getInt(12, 1);
+        Util.print("Year: ", Util.GREEN);
+        int year = Util.getInt(CURRENT_YEAR, CURRENT_YEAR - 100);
+        String dateOfBirth = myFormat.format(month) + "/" + myFormat.format(day) + "/" + year;
+
+        if (CURRENT_YEAR - year < MIN_AGE)
+            Util.println("\n Sorry, you must be at least" + MIN_AGE + " to join social network ", Util.RED_BG_BRIGHT);
+        else {
+            dataBase.add(accName, fullName, new Profile(firstName, lastName, accName, dateOfBirth, password, null));
+            Util.clearScreen();
+            Util.println("\nCongratulations! Your account is created. Let's try login to your account!", Util.YELLOW_BOLD);
+            Util.pressEnterToContinue();
+            input.nextLine();
+            return login();
+        }
+        return true;
+    }
+
+
+
+
+    /***************************************************************************************
+     * This is the user's home screen, where they will be taken to after logging in
+     * The user will be prompted to enter an action they want to do, including:
+     *      manage their account,
+     *      find someone in the network
+     *      check and perform actions on their friend list
+     *      See the people that they may know(friends of friends)
+     *      See the friend list of one of a friends
+     *      log out
+     */
+    public static void showHomeScreen() {
+        // check whether to go back to the home screen
+        // *(only true when user logs out or delete account)
+        boolean exitHomeScreen = false;
+
+        //
+        while (!exitHomeScreen) {
+            Util.clearScreen();
+            Util.makeWordArt("Home", Util.CYAN_BRIGHT, '⁋', false, 50, 21, 13);
+            // Display the options to the user
+            Util.print("                                              \n ", Util.YELLOW_BG);
+            Util.print("                                            ", null);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    1.  Manage your account                 ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    2.  Find someone                        ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    3.  Check your friend list              ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    4.  See people you may know             ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    5.  See the friend list of a friend     ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    6.  Log out                             ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("                                            ", null);
+            Util.println(" \n                                              \n", Util.YELLOW_BG);
+
+            Util.print("Please enter the action you want to do: ", Util.GREEN);
+            int action = Util.getInt(6, 1);
+
+            Util.clearScreen();
+            switch(action) {
+                case 1:
+                    ////// Manage Account
+                    exitHomeScreen = manageAccount();
+                    break;
+
+                case 2:
+                    ///// Find someone in the social network
+                    findPeople();
+                    break;
+
+                case 3:
+                    ///// See who's in your friend list and search for specific friend
+                    manageFriendList();
+                    break;
+            
+                ////// Check out the people that I may know
+                case 4:
+                    showFriendsOfFriends();
+                    break;
+                
+                case 5:
+                    ////// See the friend list of a chosen friend
+                    Util.print("\nPlease enter the FULL NAME of a friend: ", Util.GREEN);
+                    String lookFor = input.nextLine();
+                    Util.clearScreen();
+                    // check if the friend list has the input profile
+                    Profile foundFriend = dataBase.findFriend(myProfile, lookFor);
+
+                    if (foundFriend != null) {
+                        Util.makeWordArt(foundFriend.getFirstName() + "'s friends :", 
+                                         Util.CYAN, '*', true, 120, 22, 12);
+                        if (showFriendList(foundFriend)) {
+                            Profile found = findPersonInFriendList(foundFriend);
+                            if (found != null) {
+                                Util.clearScreen();
+                                found.printProfile();
+                                makeFriend(found);
+                            }
+                        }
+                    }
+                    break;
+
+                case 6:
+                    ////// Log out
+                    if (Util.yesNoResponse("\n\nAre you sure you want to log out?\n" + "  Please enter 'y' or 'n': "))
+                        exitHomeScreen = true;
+                    break;
+            }
+            Util.pressEnterToContinue();
+        }
+    }
+
+
+
+    /*****************************************************************************
+     * Let the user manage their account. They can choose to:
+     *      update their profile, which including changing name, birthdate, and status
+     *      reset their password
+     *      delete their account
+     *
+     * @return whether to exit the home screen.
+     *         (only return true when the user delete the account)
+     */
+    public static boolean manageAccount() {
+        Util.clearScreen();
+        Util.makeWordArt("Account Setting", Util.CYAN, '§', true, 120, 23, 12);
+        // Show the changes that the user can make
+        Util.println("\t※※※※※※※※※※※※※※※※※※※※※※※※※※※※", Util.CYAN);
+        Util.println("\t※※  1. Update profile     ※※", Util.CYAN_BRIGHT);
+        Util.println("\t※※  2. Change password    ※※", Util.CYAN_BRIGHT);
+        Util.println("\t※※  3. Delete acccount    ※※", Util.CYAN_BRIGHT);
+        Util.println("\t※※  4. Go back            ※※", Util.CYAN_BRIGHT);
+        Util.println("\t※※※※※※※※※※※※※※※※※※※※※※※※※※※※", Util.CYAN);
+
+        // prompt for input from user
+        Util.print("\nPlease enter the action you want to do next: ", Util.GREEN);
+        int action = Util.getInt(4, 1);
+        Util.clearScreen();
+
+        /// Update profile
+        //// Reset Password
+        //// Delete account
+        switch (action) {
+            case 1 -> {
+                Profile oldProfile = myProfile;
+                Util.println("1. Name", Util.CYAN_BRIGHT);
+                Util.println("1. Date of Birth", Util.CYAN_BRIGHT);
+                Util.println("3. Status\n", Util.CYAN_BRIGHT);
+                Util.print("Please select the option that you want to update: ", Util.GREEN);
+                int option = Util.getInt(4, 1);
+                if (option == 1) {
+                    Util.print("\nPlease enter your new first name: ", Util.GREEN);
+                    String newFirstName = input.next();
+                    Util.print("Please enter your new last name: ", Util.GREEN);
+                    String newLastName = input.next();
+                    myProfile.setFirstName(newFirstName);
+                    myProfile.setLastName(newLastName);
+                    Util.println("Your name is now set as " + myProfile.getName() + "\n", Util.YELLOW_BOLD);
+                } else if (option == 2) {
+                    Util.println("\nPlease enter your day, month, year of birth respectively: ", Util.GREEN);
+                    final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
+                    DecimalFormat myFormat = new DecimalFormat("##");
+                    Util.print("Day: ", Util.GREEN);
+                    int day = Util.getInt(31, 1);
+                    Util.print("Month: ", Util.GREEN);
+                    int month = Util.getInt(12, 1);
+                    Util.print("Year: ", Util.GREEN);
+                    int year = Util.getInt(CURRENT_YEAR, CURRENT_YEAR - 100);
+                    String dateOfBirth = myFormat.format(day) + "/" + myFormat.format(month) + "/" + year;
+                    myProfile.setDateOfBirth(dateOfBirth);
+                    Util.println("Your date of birth is now successfully set as: " +
+                            myProfile.getDateOfBirth(), Util.YELLOW_BOLD);
+                } else if (option == 3) {
+                    Util.println("\nTell us what's in your mind, " + myProfile.getFirstName() + ": ", Util.GREEN);
+                    String status = input.nextLine();
+                    myProfile.setStatus(status);
+                    Util.println("Thanks for sharing!", Util.PURPLE_BOLD_BRIGHT);
+                }
+                dataBase.updateProfile(oldProfile, myProfile);
+            }
+            case 2 -> {
+                String password = Util.promptPassword("\nPlease enter your current password first: ");
+                if (password.equals(myProfile.getPassword())) {
+                    String newPassword = Util.setPassword();
+                    myProfile.setPassword(newPassword);
+                    Util.println("\nYour password is successfully reset!", Util.YELLOW_BOLD);
+                } else
+                    Util.println("Incorrect password! You will be brought back to the main screen.",
+                            Util.YELLOW_BOLD);
+            }
+            case 3 -> {
+                Util.clearScreen();
+                Util.print("(T_T) Are you sure you want to permanently delete your account? \n",
+                        Util.RED_BOLD_BRIGHT);
+                if (Util.yesNoResponse("Please enter 'y' or 'n': ")) {
+                    Util.print("\nPlease enter your password to delete your account: ", Util.GREEN);
+                    String passw = input.next();
+                    if (passw.equals(myProfile.getPassword())) {
+                        dataBase.remove(myProfile.getAccountName());
+                        Util.println("Your account is successfully removed!\n" +
+                                "You will be taken back the main screen.", Util.YELLOW_BOLD);
+                        return true;
+                    } else
+                        Util.println("Incorrect password! You will be brought back to the main screen.", Util.YELLOW_BOLD);
+                }
+            }
         }
         return false;
     }
 
 
+
+
+    /***********************************************************************************
+     * find a person in the network. 
+     * if the person cannot be found, inform the user the person does not exist
+     * if the person is not friend with the user, then asks if the user wants to make friend
+     */
+    public static void findPeople() {
+        Util.print("\nPlease enter the FULL NAME of the person you want to find: ", Util.GREEN);
+        String lookFor = input.nextLine();
+        Util.clearScreen();
+
+        Profile foundProfile = dataBase.getProfile(lookFor);
+        if (foundProfile != null) {
+            foundProfile.printProfile();
+            if (!dataBase.areFriends(myProfile, foundProfile) && !foundProfile.equals(myProfile)) {
+                System.out.println();
+                showMutual(myProfile, foundProfile);
+            }
+            makeFriend(foundProfile);
+        }
+        else {
+            Util.print("\n" + lookFor + " cannot be found in data base\n", Util.YELLOW_BOLD);
+        }
+    }
+
+
+
+
+    /**************************************************************************************
+     * Let the user perform actions on their friendlist, including:
+     *      see all the people on their friendlist
+     *      look for a person in their friendlist, then unfriend the person if the user wants
+     */
+    public static void manageFriendList() {
+        Util.makeWordArt("Friends Manager", Util.CYAN, '$', true, 130, 22, 12);
+        Util.print("\n1. See your friend list" + "\n2. Search for a friend in your friend list", Util.CYAN);
+        Util.print("\n\n        Please enter the action you want to do next: ", Util.GREEN);
+        int response = Util.getInt(2, 1);
+        
+        Util.clearScreen();
+        if (response == 1) {
+            Util.clearScreen();
+            Util.makeWordArt("Your friends are", Util.YELLOW, '⁕', true, 130, 20, 15);
+            if (showFriendList(myProfile))
+                response = 2;
+        }
+        if (response == 2) {
+            Profile foundFriend = findPersonInFriendList(myProfile);
+            if (foundFriend != null) {
+                Util.clearScreen();
+                foundFriend.printProfile();
+
+                Util.print("\n\nDo you want to remove " + foundFriend.getFirstName()
+                        + " from the friend list?" + "\n    ", Util.GREEN);
+                if (Util.yesNoResponse("Please enter 'y' or 'n': ")) {
+                    dataBase.endFriendship(myProfile, foundFriend);
+                    Util.println(foundFriend.getFirstName() + " is successfully removed from the friend list!\n", Util.YELLOW_BOLD);
+                }
+            }
+        }
+    }
+
+
+
+
+    /**************************************************************************************
+     * the "People that you may know" feature
+     * display the friends of the user's friends as a recommendation for them to expand network
+     */
+    public static void showFriendsOfFriends() {
+        LinkedQueue<Profile> queue = dataBase.getFriendsOfFriends(myProfile);
+
+        if (!queue.isEmpty()) {
+            Util.makeWordArt("You may know :", Util.CYAN, '*', true, 120, 20, 15);
+            System.out.println("\n");
+
+            while (!queue.isEmpty()) {
+                Profile personIMayKnow = queue.dequeue();
+                Util.print("\t(☞ﾟヮﾟ)☞   " + personIMayKnow.getName() + "\n", Util.YELLOW_BOLD_BRIGHT);
+                showMutual(personIMayKnow, myProfile);
+            }
+        }
+        else {
+            Util.print("Sorry, we cannot find any friend recommendation for you!\n", Util.YELLOW_BOLD);
+        }
+        System.out.println();
+    }
+
+
+
+
+    /**************************************************************************************
+     * Display all the friends of a person (profile).
+     * 
+     * @param profile: the profile to show the friend lists of
+     * @return: whether to search for a specific person in the friend list displayed
+     */
+    public static boolean showFriendList(Profile profile) {
+        System.out.print("\n");
+        if (printFriendListOf(profile)) {
+            return Util.yesNoResponse("\nDo you want to search for a specific person in this list? (y/n): ");
+        }
+        return false;
+    }
+
+
+
+
+    /**************************************************************************************
+     * search for a person in a profile's friend list. 
+     * 
+     * @param: the profile that the user wants to search for a friend in the friend list of
+     * @return: the profile that the user searched for. If the profile does not exist, return null
+     */
     public static Profile findPersonInFriendList(Profile profile) {
         Profile result;
-        System.out.print("\n\nPlease enter the name of the person you are looking for: ");
-        input.nextLine();
+        Util.print("\n\nPlease enter the name of the person you are looking for: ", Util.GREEN);
         String lookFor = input.nextLine();
         result = dataBase.findFriend(profile, lookFor);
         return result;
     }
 
 
+
+    /**************************************************************************************
+     * Create a friendship between the user and another profile
+     * 
+     * @param profile: the profile that the user will make friend with
+     */
     public static void makeFriend(Profile profile) {
         if (!dataBase.areFriends(profile, myProfile) && !profile.equals(myProfile)) {
-            System.out.println("\nDo you want to make friend with " +
-                    profile.getName() + "?\n Please enter 'y' or 'n': ");
-            if (yesNoResponse()) {
-                dataBase.createFriendship(profile, myProfile);
+            Util.println("\nDo you want to make friend with " +
+                    profile.getName() + "?", Util.PURPLE_BOLD_BRIGHT);
+            if (Util.yesNoResponse("Please enter 'y' or 'n': ")) {
                 System.out.println("\n");
+                dataBase.createFriendship(profile, myProfile);
             }
-        } else {
+        }
+        else {
             if (dataBase.areFriends(myProfile, profile))
-                System.out.print("\nYou and " + profile.getName() + " are already friends\n\n");
+                Util.print("\nYou and " + profile.getName() + " are already friends\n\n", Util.PURPLE_BRIGHT);
         }
     }
 
 
+
+
+    /**************************************************************************************
+     * print out all the people in the friend list of a profile.
+     * If the friend list is empty, inform that the person has no friend yet
+     * 
+     * @param profile: the profile that the user wants to see the friend list of
+     * @return: whether or not the friend list of the input profile is empty
+     */
     public static boolean printFriendListOf(Profile profile) {
         LinkedQueue<Profile> queue = dataBase.getFriendListOf(profile);
         boolean isNotEmpty;
@@ -370,400 +539,41 @@ public class Driver {
         if (!queue.isEmpty()) {
             isNotEmpty = true;
             while (!queue.isEmpty()) {
-                System.out.print(queue.dequeue().getName() + "   ");
+                Util.print("\t(☞ﾟヮﾟ)☞  " + queue.dequeue().getName() + "\n", Util.PURPLE_BRIGHT);
             }
             System.out.println();
-        } else {
+        }
+        else {
             isNotEmpty = false;
-            System.out.println(profile.getName() + " has no friend yet!");
+            Util.clearScreen();
+            Util.println(profile.getName() + " has no friend yet!", Util.RED_BRIGHT);
         }
         return isNotEmpty;
     }
 
 
+
+    
+    /**************************************************************************************
+     * Take 2 profiles and then show the number of mutual friends between them
+     * Then print the list of the mutual friends on the screen
+     * 
+     * @param left,right: show the mutual friends between these profiles
+     */
     public static void showMutual(Profile left, Profile right) {
-        System.out.print("This person has " + dataBase.findMutualFriends(left, right) +
-                " mutual friends with you");
+        Util.print("\tThis person has " + dataBase.findMutualFriends(left, right) +
+                " mutual friends with you", Util.PURPLE);
 
         LinkedQueue<Profile> mutualFriends = dataBase.getMutualFriends(left, right);
         if (!mutualFriends.isEmpty()) {
-            System.out.print(", including:\n");
+            Util.print(", including:\n\t", Util.PURPLE);
             while (!mutualFriends.isEmpty()) {
-                System.out.print(mutualFriends.dequeue().getName() + "   ");
+                Util.print("⁕ " + mutualFriends.dequeue().getName() + "  ", Util.PURPLE_BOLD_BRIGHT);
             }
-            System.out.println("\n");
-        } else
-            System.out.println("\n");
-    }
-
-
-    // get an integer and check if in desired range
-    public static int getInt(int max, int min) {
-        int result = 0;
-        boolean pass;
-        do {
-            pass = true;
-            try {
-                result = input.nextInt();
-            } catch (NumberFormatException e) {
-                System.out.print("Could not convert input to an integer. Please re-enter: ");
-                pass = false;
-            } catch (Exception e) {
-                System.out.print("There was an error with System.in. Please re-enter: ");
-                pass = false;
-            }
-            if (pass)
-                if (result > max || result < min) {
-                    System.out.print("Input out of range, please re-enter: ");
-                    pass = false;
-                }
-        } while (!pass);
-        return result;
-    }
-
-
-    // get yes no response from the user
-    public static boolean yesNoResponse() {
-        char response;
-        boolean pass = false;
-        boolean result = false;
-
-        while (!pass) {
-            response = input.next().charAt(0);
-            response = Character.toLowerCase(response);
-
-            if (response == 'y') {
-                pass = true;
-                result = true;
-            } else if (response == 'n') {
-                pass = true;
-                result = false;
-            } else
-                System.out.print("Invalid input! Please re-enter (y/n): ");
         }
-        return result;
-    }
-
-
-    // the login process
-    public static boolean login() {
-        boolean pass = false;
-        do {
-            System.out.print("\nPlease enter your first name: ");
-            String firstName = input.next();
-            System.out.print("Please enter your last name: ");
-            String lastName = input.next();
-            String accountName = firstName + " " + lastName;
-
-            myProfile = dataBase.getProfile(accountName);
-            if (myProfile == null)
-                System.out.println("We cannot find your account. Let's try it one more time!");
-            else {
-                boolean match = false;
-                System.out.print("Please enter your password: ");
-                while (!match) {
-                    String password = input.next();
-
-                    if (password.equals(myProfile.getPassword()))
-                        pass = match = true;
-                    else
-                        System.out.print("Wrong password! Please re-enter: ");
-                }
-            }
-        } while (!pass);
-        return false;
-    }
-
-
-    // the process of setting the password for the account
-    public static String setPassword() {
-        String password = "";
-        boolean match = false;
-        while (!match) {
-            System.out.print("\nPlease enter your password: ");
-            password = input.next();
-            System.out.print("Please confirm your password: ");
-            String confirmPass = input.next();
-            if (confirmPass.equals(password)) {
-                match = true;
-            } else
-                System.out.println("\nThis does not match your password, let's try it one more time!");
-        }
-        return password;
-    }
-
-
-    // the "Press any key to continue..." feature
-    private static void pressAnyKeyToContinue() {
-        System.out.print("Press Enter to continue...");
-        try {
-            System.in.read();
-        } catch (Exception ignored) {
-        }
-        System.out.print("\n\n\n");
+        System.out.println("\n");
     }
 }
-/*
-Sample Run From Code:
-Mirsaeid is now friend with Henry
-Steve is now friend with Amanda
-Allen is now friend with Shubham
-Shubham is now friend with Amanda
-Alex is now friend with Mirsaeid
-Steve is now friend with Jonathan
-Thanos is now friend with Jonathan
-Thanos is now friend with Tony
-Wanda is now friend with Tony
-Tony is now friend with Alex
-John is now friend with Yasaman
-Luan is now friend with John
-Thanos is now friend with Mirsaeid
-Allen is now friend with Alex
-Alice is now friend with Amanda
-Thanos is now friend with Shubham
-Alice is now friend with Shubham
-Jonathan is now friend with John
-Amanda is now friend with Yasaman
-Wanda is now friend with Henry
-Steve is now friend with Roger
-Luan is now friend with Jonathan
-Allen is now friend with Henry
-Luan is now friend with Steve
-Steve is now friend with Thanos
-Mike is now friend with Kevin
-Alice is now friend with Mike
-Mike is now friend with Amanda
-Roger is now friend with Amanda
-Jonathan is now friend with Wanda
-John is now friend with Kevin
-Jonathan is now friend with Shubham
-Shubham is now friend with Henry
-Kevin is now friend with Amanda
-Tony is now friend with Henry
-Wanda is now friend with Logan
-Alex is now friend with John
-Steve is now friend with Wanda
-Jonathan is now friend with Yasaman
-Roger is now friend with Yasaman
-Kevin is now friend with Luan
-Henry is now friend with Steve
-Wanda is now friend with Roger
-Jonathan is now friend with Alex
-Mirsaeid is now friend with Steve
-Allen is now friend with Amanda
-Steve is now friend with Alice
-Yasaman is now friend with Alex
-Luan is now friend with Roger
-Jonathan is now friend with Kevin
-Henry is now friend with Amanda
-Alex is now friend with Henry
-Mia is now friend with Mike
-Thanos is now friend with John
-Tony is now friend with Amanda
-Luan is now friend with Thanos
-Yasaman is now friend with Henry
-John is now friend with Amanda
-Alex is now friend with Steve
-Shubham is now friend with Logan
-Alex is now friend with Wanda
-Tony is now friend with Yasaman
-John is now friend with Henry
-Amanda is now friend with Alex
-Mirsaeid is now friend with Luan
-Press Enter to continue...+
 
 
-
-1. Log in
-2. Create new account
-3. Exit
-
-       Please enter an integer to perform action: 1
-
-Please enter your first name: Allen
-Please enter your last name: Tran
-Please enter your password: 12345
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 2
-
-Please enter the name of the person you want to look for: Yasaman Baher
-
-Yasaman Baher - 16 years old
-Birthday: 10/15/2005
-Status: "Hello, world!"
-
-This person has 3 mutual friends with you, including:
-Alex A   Henry X   Amanda Waller
-
-
-Do you want to make friend with Yasaman Baher?
- Please enter 'y' or 'n':
-y
-Yasaman is now friend with Allen
-
-
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 4
-
-
-Some people you may know:
-
-***  Thanos X
-This person has 1 mutual friends with you, including:
-Shubham Goswami
-
-***  Alice B
-This person has 2 mutual friends with you, including:
-Amanda Waller   Shubham Goswami
-
-***  Jonathan X
-This person has 3 mutual friends with you, including:
-Shubham Goswami   Yasaman Baher   Alex A
-
-***  Logan X
-This person has 1 mutual friends with you, including:
-Shubham Goswami
-
-***  Mirsaeid Abol
-This person has 2 mutual friends with you, including:
-Henry X   Alex A
-
-***  Tony Stark
-This person has 4 mutual friends with you, including:
-Alex A   Henry X   Amanda Waller   Yasaman Baher
-
-***  John Doe
-This person has 4 mutual friends with you, including:
-Yasaman Baher   Alex A   Amanda Waller   Henry X
-
-***  Steve Rogers
-This person has 3 mutual friends with you, including:
-Amanda Waller   Henry X   Alex A
-
-***  Wanda Maximoff
-This person has 2 mutual friends with you, including:
-Henry X   Alex A
-
-***  Mike Pence
-This person has 1 mutual friends with you, including:
-Amanda Waller
-
-***  Roger X
-This person has 2 mutual friends with you, including:
-Amanda Waller   Yasaman Baher
-
-***  Kevin Do
-This person has 1 mutual friends with you, including:
-Amanda Waller
-
-
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 5
-
-Please enter the name of your friend that you would like to see their friends of: Amanda Waller
-
-Here are Amanda Waller's friends:
-
-Steve Rogers   Shubham Goswami   Alice B   Yasaman Baher   Mike Pence   Roger X   Kevin Do   Allen Tran   Henry X   Tony Stark   John Doe   Alex A
-
-Do you want to search for a specific person in this list? (y/n): n
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 1
-
-1. Update profile
-2. Change your password
-3. Delete account
-      Please enter the action you want to do next: 1
-
-1. Name
-2. Date of birth
-3. status
-4. change your password
-      Please select the option that you want to update: 3
-
-Tell us what's in your mind, Allen:
-Hello, world!
-Thanks for sharing!
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 2
-
-Please enter the name of the person you want to look for: Shubham Goswami
-
-Shubham Goswami - 81 years old
-Birthday: 5/17/1940
-Status: "Hello, world!"
-
-You and Shubham Goswami are already friends
-
-
-
-====================
-1. Manage your account
-2. Find Someone
-3. Check your friend list
-4. See people that you may know
-5. See the friend list of a friend
-6. Log out
-
-      Please enter the action you want to do: 6
-
-
-Are you sure you want to log out?
-  Please enter 'y' or 'n': y
-Press Enter to continue...+
-
-
-
-1. Log in
-2. Create new account
-3. Exit
-
-       Please enter an integer to perform action: 3
-
-Process finished with exit code 0
- */
+// https://codehackersblog.blogspot.com/2015/06/image-to-ascii-art-converter-in-java.html

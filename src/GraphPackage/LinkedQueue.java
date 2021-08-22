@@ -1,14 +1,14 @@
 package GraphPackage;
 
-public final class LinkedQueue<T> implements QueueInterface<T> {
+import java.io.Serializable;
+
+public final class LinkedQueue<T> implements QueueInterface<T>, Serializable
+{
     private Node firstNode;
     private Node lastNode;
 
-    /**
-     * Adds a new entry to the back of this queue.
-     *
-     * @param newEntry An object to be added.
-     */
+    /** Adds a new entry to the back of this queue.
+     @param newEntry  An object to be added. */
     public void enqueue(T newEntry) {
         Node newNode = new Node(newEntry, null);
         if (isEmpty())
@@ -18,12 +18,9 @@ public final class LinkedQueue<T> implements QueueInterface<T> {
         lastNode = newNode;
     }
 
-    /**
-     * Removes and returns the entry at the front of this queue.
-     *
-     * @return The object at the front of the queue.
-     * @throws EmptyQueueException if the queue is empty before the operation.
-     */
+    /** Removes and returns the entry at the front of this queue.
+     @return  The object at the front of the queue.
+     @throws EmptyQueueException if the queue is empty before the operation. */
     public T dequeue() {
         T front = getFront();
 
@@ -36,39 +33,31 @@ public final class LinkedQueue<T> implements QueueInterface<T> {
         return front;
     }
 
-    /**
-     * Retrieves the entry at the front of this queue.
-     *
-     * @return The object at the front of the queue.
-     * @throws EmptyQueueException if the queue is empty.
-     */
+    /**  Retrieves the entry at the front of this queue.
+     @return  The object at the front of the queue.
+     @throws EmptyQueueException if the queue is empty. */
     public T getFront() {
         if (isEmpty())
             throw new EmptyQueueException();
         else {
             assert firstNode != null;
-            return firstNode.getData();
+            return  firstNode.getData();
         }
     }
 
-    /**
-     * Detects whether this queue is empty.
-     *
-     * @return True if the queue is empty, or false otherwise.
-     */
+    /** Detects whether this queue is empty.
+     @return  True if the queue is empty, or false otherwise. */
     public boolean isEmpty() {
         return (firstNode == null) && (lastNode == null);
     }
 
-    /**
-     * Removes all entries from this queue.
-     */
+    /** Removes all entries from this queue. */
     public void clear() {
         firstNode = null;
         lastNode = null;
     }
 
-    class Node {
+    class Node implements Serializable{
         private T data;
         private Node next;
 

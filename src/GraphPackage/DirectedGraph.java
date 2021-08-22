@@ -1,15 +1,19 @@
 package GraphPackage;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class DirectedGraph<T> implements GraphInterface<T> {
+public class DirectedGraph<T> implements GraphInterface<T>, Serializable {
     private DictionaryInterface<T, VertexInterface<T>> vertices;
     private int edgeCount;
+
+
 
     public DirectedGraph() {
         vertices = new LinkedDictionary<>();
         edgeCount = 0;
     } // end default constructor
+
 
 
     protected void resetVertices() {
@@ -21,6 +25,7 @@ public class DirectedGraph<T> implements GraphInterface<T> {
             nextVertex.setPredecessor(null);
         } // end while
     } // end resetVertices
+
 
 
     @Override
@@ -46,6 +51,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         }
         return traversalOrder;
     }
+
+
 
     public QueueInterface<T> getDepthFirstTraversal(T origin) {
         // Assumes graph is not empty
@@ -73,6 +80,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         return traversalOrder;
     } // end getDepthFirstTraversal
 
+
+
     public StackInterface<T> getTopologicalOrder() {
         resetVertices();
 
@@ -87,6 +96,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         return vertexStack;
     } // end getTopologicalOrder
 
+
+
     /**
      * Precondition: path is an empty stack (NOT null)
      */
@@ -99,8 +110,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         VertexInterface<T> endVertex = vertices.getValue(end);
 
         originVertex.visit();
-// Assertion: resetVertices() has executed setCost(0)
-// and setPredecessor(null) for originVertex
+        // Assertion: resetVertices() has executed setCost(0)
+        // and setPredecessor(null) for originVertex
 
         vertexQueue.enqueue(originVertex);
 
@@ -124,7 +135,7 @@ public class DirectedGraph<T> implements GraphInterface<T> {
             } // end while
         } // end while
 
-// Traversal ends; construct shortest path
+        // Traversal ends; construct shortest path
         int pathLength = (int) endVertex.getCost();
         path.push(endVertex.getLabel());
 
@@ -136,6 +147,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
 
         return pathLength;
     } // end getShortestPath
+
+
 
 
     /**
@@ -194,6 +207,9 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         return pathCost;
     } // end getCheapestPath
 
+
+
+
     protected VertexInterface<T> findTerminal() {
         boolean found = false;
         VertexInterface<T> result = null;
@@ -203,7 +219,7 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         while (!found && vertexIterator.hasNext()) {
             VertexInterface<T> nextVertex = vertexIterator.next();
 
-            // If nextVertex is unvisited AND has only visited neighbors)
+        // If nextVertex is unvisited AND has only visited neighbors)
             if (!nextVertex.isVisited()) {
                 if (nextVertex.getUnvisitedNeighbor() == null) {
                     found = true;
@@ -214,6 +230,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
 
         return result;
     } // end findTerminal
+
+
 
 
     // Used for testing
@@ -227,12 +245,16 @@ public class DirectedGraph<T> implements GraphInterface<T> {
     } // end displayEdges
 
 
+
+
     @Override
     public boolean addVertex(T vertexLabel) {
         VertexInterface<T> addOutcome = vertices.add(vertexLabel, new Vertex<>(vertexLabel));
 
         return addOutcome == null;
     }
+
+
 
 
     @Override
@@ -252,10 +274,14 @@ public class DirectedGraph<T> implements GraphInterface<T> {
     }
 
 
+
+
     @Override
     public boolean addEdge(T begin, T end) {
         return addEdge(begin, end, 0);
     }
+
+
 
 
     @Override
@@ -279,9 +305,11 @@ public class DirectedGraph<T> implements GraphInterface<T> {
     }
 
 
+
     public VertexInterface<T> getVertex(T value) {
         return vertices.getValue(value);
     }
+
 
 
     @Override
@@ -306,7 +334,7 @@ public class DirectedGraph<T> implements GraphInterface<T> {
     }
 
 
-    private class EntryPQ implements Comparable<EntryPQ> {
+    private class EntryPQ implements Comparable<EntryPQ>, Serializable {
         private VertexInterface<T> vertex;
         private VertexInterface<T> previousVertex;
         private double cost; // cost to nextVertex
@@ -330,8 +358,8 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         } // end getCost
 
         public int compareTo(EntryPQ otherEntry) {
-            // Using opposite of reality since our priority queue uses a maxHeap;
-            // could revise using a minheap
+        // Using opposite of reality since our priority queue uses a maxHeap;
+        // could revise using a minheap
             return (int) Math.signum(otherEntry.cost - cost);
         } // end compareTo
 
@@ -340,12 +368,16 @@ public class DirectedGraph<T> implements GraphInterface<T> {
         } // end toString
     } // end EntryPQ
 
+
+
     public void removeEdge(T vertex1, T vertex2) {
         VertexInterface<T> start = vertices.getValue(vertex1);
         VertexInterface<T> end = vertices.getValue(vertex2);
         start.removeEdge(end);
         end.removeEdge(start);
     }
+
+
 
     public void removeVertex(T vertexLabel) {
         Iterator<VertexInterface<T>> neighbors = vertices.getValue(vertexLabel).getNeighborIterator();
@@ -355,6 +387,14 @@ public class DirectedGraph<T> implements GraphInterface<T> {
             removeEdge(vertexLabel, vertex2);
         }
         vertices.remove(vertexLabel);
-
     }
+
+
+
+
+    public void replaceVertex(T vertexLabel, T newLabel) {
+        VertexInterface<T> vertexToReplace = getVertex(vertexLabel);
+        vertexToReplace.setLabel(newLabel);
+    }
+
 } // end DirectedGraph
