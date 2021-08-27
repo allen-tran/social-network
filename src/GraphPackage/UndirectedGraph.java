@@ -1,5 +1,7 @@
 package GraphPackage;
 
+import QueueAndStackPackage.StackInterface;
+
 /**
  A class that implements the ADT undirected graph.
 

@@ -1,7 +1,8 @@
 // Hoang Phuc Luan Truong (Luan)
-import GraphPackage.LinkedQueue;
 import java.text.DecimalFormat;
 import java.util.*;
+
+import QueueAndStackPackage.LinkedQueue;
 
 
 public class Driver {
@@ -23,6 +24,7 @@ public class Driver {
                 showHomeScreen();
         }
     }
+
 
 
     /***************************************************************************************
@@ -153,7 +155,6 @@ public class Driver {
             else
                 break;
         } while(true);
-        
         String password = Util.setPassword();
 
         Util.println("\nPlease enter your day, month, year of birth respectively: ", Util.GREEN);
@@ -198,7 +199,6 @@ public class Driver {
         // *(only true when user logs out or delete account)
         boolean exitHomeScreen = false;
 
-        //
         while (!exitHomeScreen) {
             Util.clearScreen();
             Util.makeWordArt("Home", Util.CYAN_BRIGHT, '⁋', false, 50, 21, 13);
@@ -216,13 +216,15 @@ public class Driver {
             Util.print(" \n ", Util.YELLOW_BG);
             Util.print("    5.  See the friend list of a friend     ", Util.CYAN_BOLD_BRIGHT);
             Util.print(" \n ", Util.YELLOW_BG);
-            Util.print("    6.  Log out                             ", Util.CYAN_BOLD_BRIGHT);
+            Util.print("    6.  Manage news feed                    ", Util.CYAN_BOLD_BRIGHT);
+            Util.print(" \n ", Util.YELLOW_BG);
+            Util.print("    7.  Log out                             ", Util.CYAN_BOLD_BRIGHT);
             Util.print(" \n ", Util.YELLOW_BG);
             Util.print("                                            ", null);
             Util.println(" \n                                              \n", Util.YELLOW_BG);
 
             Util.print("Please enter the action you want to do: ", Util.GREEN);
-            int action = Util.getInt(6, 1);
+            int action = Util.getInt(7, 1);
 
             Util.clearScreen();
             switch(action) {
@@ -269,6 +271,10 @@ public class Driver {
                     break;
 
                 case 6:
+                    manageNewsFeed();
+                    break;    
+
+                case 7:
                     ////// Log out
                     if (Util.yesNoResponse("\n\nAre you sure you want to log out?\n" + "  Please enter 'y' or 'n': "))
                         exitHomeScreen = true;
@@ -312,7 +318,7 @@ public class Driver {
             case 1 -> {
                 Profile oldProfile = myProfile;
                 Util.println("1. Name", Util.CYAN_BRIGHT);
-                Util.println("1. Date of Birth", Util.CYAN_BRIGHT);
+                Util.println("2. Date of Birth", Util.CYAN_BRIGHT);
                 Util.println("3. Status\n", Util.CYAN_BRIGHT);
                 Util.print("Please select the option that you want to update: ", Util.GREEN);
                 int option = Util.getInt(4, 1);
@@ -361,8 +367,7 @@ public class Driver {
                 Util.print("(T_T) Are you sure you want to permanently delete your account? \n",
                         Util.RED_BOLD_BRIGHT);
                 if (Util.yesNoResponse("Please enter 'y' or 'n': ")) {
-                    Util.print("\nPlease enter your password to delete your account: ", Util.GREEN);
-                    String passw = input.next();
+                    String passw = Util.promptPassword("\nPlease enter your password to delete your account: ");
                     if (passw.equals(myProfile.getPassword())) {
                         dataBase.remove(myProfile.getAccountName());
                         Util.println("Your account is successfully removed!\n" +
@@ -464,6 +469,41 @@ public class Driver {
             Util.print("Sorry, we cannot find any friend recommendation for you!\n", Util.YELLOW_BOLD);
         }
         System.out.println();
+    }
+
+
+
+    /******************************************************************************
+     * allow the user to:
+     *      check their news feed
+     *      or post something to their and their friends' news feeds
+     */
+    public static void manageNewsFeed() {
+        Util.println("1. Check News Feed", Util.CYAN_BRIGHT);
+        Util.println("2. Post Something", Util.CYAN_BRIGHT);
+        Util.print("Please select an option: ", Util.GREEN);
+        int option = Util.getInt(2, 1);
+        Util.clearScreen();
+
+        switch (option) {
+            case 1:
+                Util.makeWordArt("News Feed", Util.YELLOW, 'Ϡ', false, 130, 20, 15);
+                myProfile.showNewsFeed();
+                System.out.println("\n");
+                break;
+
+            case 2:
+                String message = "Please enter the content of the post\n";
+                Util.println(message, Util.GREEN);
+                
+                String content = Util.getMultipleLinesInput();
+                Post post = new Post(content, myProfile.getName());
+                dataBase.addPost(myProfile, post);
+        
+                Util.println("\n\nThank you for your post!", Util.YELLOW_BOLD_BRIGHT);
+                Util.pressEnterToContinue();
+                break;
+        }
     }
 
 
@@ -574,6 +614,3 @@ public class Driver {
         System.out.println("\n");
     }
 }
-
-
-// https://codehackersblog.blogspot.com/2015/06/image-to-ascii-art-converter-in-java.html

@@ -3,6 +3,9 @@ package GraphPackage;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import ListPackage.LinkedListWithIterator;
+import ListPackage.ListWithIteratorInterface;
 /**
    A class of vertices for a graph.
  
