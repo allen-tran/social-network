@@ -24,17 +24,21 @@ time for hashed dictionary is only O(1), there's no decrease in performance at a
 
 
 ## Demo Run:
+A few demo screenshots...<br>
+##################<br><br>The main screen<br>
 
-![Main Screen](https://drive.google.com/file/d/17HomhMAYSdzASECQoIPudBReCP1W592H/view)
+![demo1](https://user-images.githubusercontent.com/83048295/131197358-afb27c25-3d38-4836-8f81-21cb64d0f2c6.png)
+
+<br>The home screen (after loggin in)<br>
+![demo2](https://user-images.githubusercontent.com/83048295/131197382-8ef77808-ac36-42b2-b22d-0d7d7c40644e.png)
+
+<br>The news feed, where users post something<br>
+![demo3](https://user-images.githubusercontent.com/83048295/131197502-34135d2e-b6f6-4569-b5e2-332e92fcc5b8.png)
+
+<br>View friends in the friend list<br>
+![demo4](https://user-images.githubusercontent.com/83048295/131197523-66ebe931-0603-42f1-8039-ec9a2ceaa1a4.png)
+
+<br>View a specific profile of a user<br>
+![demo5](https://user-images.githubusercontent.com/83048295/131197532-dbce6ab3-a0af-46c6-a75a-8e99c11a60c9.png)
 
 
-![Home Screen (after logging in)](https://drive.google.com/file/d/1Rq0tdcntuamk3d2_ulnQKNmZkOqx1yrg/view)
-
-
-![View News Feeds](https://drive.google.com/file/d/1LLWj-0cpFXhE-8HYTvSSir-Y1-ogrPyn/view)
-
-
-![See Friends in Friends List](https://drive.google.com/file/d/1947FbAVXoyM7NDimVLonrzhVyclhGdbD/view)
-
-
-![View a Specific Profile](https://drive.google.com/file/d/14CI9CePlqNvvjZPsKqNuSDZ0gCPF7xRg/view)
