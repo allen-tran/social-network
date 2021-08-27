@@ -3,6 +3,12 @@ package GraphPackage;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import QueueAndStackPackage.LinkedQueue;
+import QueueAndStackPackage.LinkedStack;
+import QueueAndStackPackage.PriorityQueueInterface;
+import QueueAndStackPackage.QueueInterface;
+import QueueAndStackPackage.StackInterface;
+
 public class DirectedGraph<T> implements GraphInterface<T>, Serializable {
     private DictionaryInterface<T, VertexInterface<T>> vertices;
     private int edgeCount;

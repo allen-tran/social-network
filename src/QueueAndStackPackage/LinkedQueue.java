@@ -1,6 +1,8 @@
-package GraphPackage;
+package QueueAndStackPackage;
 
 import java.io.Serializable;
+
+import GraphPackage.EmptyQueueException;
 
 public final class LinkedQueue<T> implements QueueInterface<T>, Serializable
 {

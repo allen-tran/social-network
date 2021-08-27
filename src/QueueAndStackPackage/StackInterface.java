@@ -1,4 +1,4 @@
-package GraphPackage;
+package QueueAndStackPackage;
 
 /**
  An interface for the ADT stack.
