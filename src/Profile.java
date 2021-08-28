@@ -1,4 +1,7 @@
 import java.util.Calendar;
+
+import ListPackage.ArrayList;
+
 import java.io.Serializable;
 
 public class Profile implements Serializable{
@@ -10,8 +13,10 @@ public class Profile implements Serializable{
     private String status;
     private String password;
     private String accountName;
+    private ArrayList<Post> newsFeed;
     private final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 
+    
     public Profile(String firstName, String lastName, String accName, 
                    String birthday, String password, String status) {
         this.firstName = firstName;
@@ -19,6 +24,7 @@ public class Profile implements Serializable{
         this.birthday = birthday;
         this.password = password;
         this.accountName = accName;
+        this.newsFeed = new ArrayList<Post>();
         if (status == null)
             status = "Hello, I am " + firstName;
         this.status = status;
@@ -28,9 +34,6 @@ public class Profile implements Serializable{
 
 
     public String getName() { return name; }
-
-    // Combine first name and last name to get fullname
-    private void setName() { name = firstName + " " + lastName; }
 
     public String getFirstName() { return firstName; }
 
@@ -57,10 +60,37 @@ public class Profile implements Serializable{
     public void setPassword(String password) { this.password = password; }
 
 
-    // calculate the age of the person according to the birthday
-    private void calculateAge() {
-        String[] str = birthday.split("/");
-        age = CURRENT_YEAR - Integer.parseInt(str[2]);
+    /**
+     * add a post to the end of the news feed
+     * @param post the post to be added
+     */
+    public void addPostToNewsFeed(Post post) {
+        newsFeed.add(post);
+    }
+
+
+    /**
+     * print out the news feed in reverse order so that
+     * the latest posts get to be printed out first.
+     */
+    public void showNewsFeed() {
+        int count = 0;
+        for (int i = newsFeed.getLength(); i > 0; i--) {
+            Post post = newsFeed.getEntry(i);
+            post.printPost();
+
+            if (count == 2) {
+                if (i > 1) {
+                    if (Util.yesNoResponse("\n\nDo you want to see older posts? (y/n): ")) {
+                        Util.clearScreen();
+                        count = 0;
+                    }
+                    else
+                        break;
+                }
+            }
+            count++;
+        }
     }
 
 
@@ -73,6 +103,17 @@ public class Profile implements Serializable{
         System.out.print("\tBirthday: " + birthday);
         System.out.println("\n\tStatus: \"" + status + "\"");
         System.out.print(Util.RESET);
+    }
+
+
+    // Combine first name and last name to get fullname
+    private void setName() { name = firstName + " " + lastName; }
+
+
+    // calculate the age of the person according to the birthday
+    private void calculateAge() {
+        String[] str = birthday.split("/");
+        age = CURRENT_YEAR - Integer.parseInt(str[2]);
     }
 
 }

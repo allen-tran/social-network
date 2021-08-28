@@ -23,8 +23,10 @@ public class Util {
         System.out.print(RESET + "");
     }
 
-
     
+    /**
+     * print and add a new line
+     */
     public static void println(String message, String effect) {
         print(message, effect);
         System.out.println();
@@ -88,6 +90,30 @@ public class Util {
                 }
         } while (!pass);
         return result;
+    }
+
+
+
+    /**
+     * get a multiple line string input from the user
+     * the system will keep reading input until the user presses enter twice
+     * 
+     * @return the input string
+     */
+    public static String getMultipleLinesInput() {
+        String message = "You can press enter once to skip a line, " +
+                         "twice to finish inputing.\n";
+        println(message, Util.GREEN);
+        String content = "";
+        String line = "";
+        input.nextLine();
+        while (true) {
+            line = input.nextLine().trim();
+            if (line.equals(""))
+                break;
+            content += line + "\n";
+        }
+        return content;
     }
 
 

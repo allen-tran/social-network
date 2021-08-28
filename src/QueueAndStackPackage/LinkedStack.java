@@ -1,6 +1,8 @@
-package GraphPackage;
+package QueueAndStackPackage;
 
 import java.io.Serializable;
+
+import GraphPackage.EmptyStackException;
 
 public final class LinkedStack<T> implements StackInterface<T>, Serializable
 {

@@ -1,4 +1,6 @@
-package GraphPackage;
+package QueueAndStackPackage;
+
+import GraphPackage.EmptyQueueException;
 
 /**
  An interface for the ADT queue.

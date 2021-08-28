@@ -1,6 +1,10 @@
 import java.io.Serializable;
 import GraphPackage.*;
 import HashedDictionaryPackage.*;
+import QueueAndStackPackage.LinkedQueue;
+import QueueAndStackPackage.LinkedStack;
+import QueueAndStackPackage.QueueInterface;
+
 import java.util.Iterator;
 
 public class DataBase implements Serializable {
@@ -118,7 +122,14 @@ public class DataBase implements Serializable {
 
 
 
-    // Find a friend in the friend list of a profile
+    
+    /**
+     * Find a friend in the friend list of a person
+     * 
+     * @param thisProfile the profile whose friend list we're looking in
+     * @param lookingFor the fullname of the person that we are looking for
+     * @return the profile found, return null if there's no person with that name in the list
+     */
     public Profile findFriend(Profile thisProfile, String lookingFor) {
         Profile otherProfile = getProfile(lookingFor);
         if (otherProfile != null) {
@@ -241,6 +252,26 @@ public class DataBase implements Serializable {
             }
         }
         return myQueue;
+    }
+
+
+
+    /**
+     * add a post to the newsfeed of the person who posted it,
+     * and also the newsfeeds of that person's friends.
+     * 
+     * @param profile the person who posted the post
+     * @param post the post to be added
+     */
+    public void addPost(Profile profile, Post post) {
+        // add the post to the newsfeed of the person who posted it
+        profile.addPostToNewsFeed(post);
+        // then add the post the the newsfeeds of all of his/her friends
+        LinkedQueue<Profile> friends = getFriendListOf(profile);
+        while(!friends.isEmpty()) {
+            Profile friend = friends.dequeue();
+            friend.addPostToNewsFeed(post);
+        }
     }
 
 

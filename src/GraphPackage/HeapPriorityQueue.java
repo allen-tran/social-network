@@ -2,6 +2,8 @@ package GraphPackage;
 
 import java.io.Serializable;
 
+import QueueAndStackPackage.PriorityQueueInterface;
+
 /**
    A class that implements the ADT priority queue by using a maxheap.
    
