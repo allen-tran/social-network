@@ -24,15 +24,14 @@ time for hashed dictionary is only O(1), there's no decrease in performance at a
 
 
 ## Demo Run:
-A few demo screenshots...<br>
-##################<br><br>The main screen<br>
+Main screen<br>
 
 ![demo1](https://user-images.githubusercontent.com/83048295/131197358-afb27c25-3d38-4836-8f81-21cb64d0f2c6.png)
 
-<br>The home screen (after loggin in)<br>
+<br>Home screen (after loggin in)<br>
 ![demo2](https://user-images.githubusercontent.com/83048295/131197382-8ef77808-ac36-42b2-b22d-0d7d7c40644e.png)
 
-<br>The news feed, where users post something<br>
+<br>The News feed, where users post something<br>
 ![demo3](https://user-images.githubusercontent.com/83048295/131197502-34135d2e-b6f6-4569-b5e2-332e92fcc5b8.png)
 
 <br>View friends in the friend list<br>
