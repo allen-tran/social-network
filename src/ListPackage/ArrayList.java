@@ -1,5 +1,3 @@
-// Hoang Phuc Luan Truong (Luan)
-// AList.java
 package ListPackage;
 
 import java.util.Arrays;
