@@ -1,27 +1,25 @@
-# Social-Network-on-Terminal
+# Social Network - Terminal Social Media Program
 
-
-A mock Java Facebook CRUD Program (create, read, update, delete)
-
-
-The program uses a graph data structure to simulate a social media on the terminal, where the users can
+The program uses a graph data structure to simulate a social media CRUD program, where the users can
 create accounts, log in, find other users, make friends, post something, etc.
 
 Each vertex in the graph will represent a profile/user, and each edge that connects 2 vertices will
 represent the friendship between the users.
-
 
 The program also uses hashed dictionaries to help the graph data structure when it comes to searching.
 
 The first dictionary will map an account name, which is unique, to a profile. This helps the users log in
 and make sure that two people with the same name can still use the program without any problem.
 
-But when people search for each other, they don't use account names. Instead, they use each other's fullnames.
+When people search for each other, they don't use account names but instead, each other's fullnames.
 Therefore, the second dictionary is responsible for mapping the user's fullname to the user's account name. And from
 the account name, we can get the profile via the first dictionary. Mapping the fullname to the account name will save
 much more storage than mapping the fullname directly to the profile, which takes up more space. And since the searching
 time for hashed dictionary is only O(1), there's no decrease in performance at all.
 
+## Tools Used
+- Backend: Java
+- GUI: JavaFX
 
 ## Demo Run:
 Main screen<br>
