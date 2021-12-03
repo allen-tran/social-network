@@ -21,7 +21,7 @@ time for hashed dictionary is only O(1), there's no decrease in performance at a
 - Backend: Java
 - GUI: JavaFX
 
-## Demo Run:
+## Demo Run
 Main screen<br>
 
 ![demo1](https://user-images.githubusercontent.com/83048295/131197358-afb27c25-3d38-4836-8f81-21cb64d0f2c6.png)
