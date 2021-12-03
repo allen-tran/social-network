@@ -19,7 +19,23 @@ time for hashed dictionary is only O(1), there's no decrease in performance at a
 
 ## Tools Used
 - Backend: Java
-- GUI: JavaFX
+- Interface: Terminal with Java built-in libraries
+
+
+## Running this Program Locally
+1. Clone the repository
+```
+$ git clone https://github.com/allen-tran/Social-Network
+```
+2. Run the Driver
+```
+$ javac Driver.java
+$ java Driver.java
+```
+3. Create an Account
+- enter first and last name
+- enter password
+
 
 ## Demo Run
 Main screen<br>
@@ -29,7 +45,7 @@ Main screen<br>
 <br>Home screen (after loggin in)<br>
 ![demo2](https://user-images.githubusercontent.com/83048295/131197382-8ef77808-ac36-42b2-b22d-0d7d7c40644e.png)
 
-<br>The News feed, where users post something<br>
+<br>The News feed, where users post<br>
 ![demo3](https://user-images.githubusercontent.com/83048295/131197502-34135d2e-b6f6-4569-b5e2-332e92fcc5b8.png)
 
 <br>View friends in the friend list<br>
