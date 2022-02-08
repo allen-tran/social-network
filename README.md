@@ -3,8 +3,7 @@
 ## About
 ### The program uses a both a graph and hashed dictionary to simulate a social media CRUD program, where the users can create accounts, log in, find other users, make friends, post something, etc.
 
-#### The first dictionary will map an account name, which is unique, to a profile. This helps the users log in
-and make sure that two people with the same name can still use the program without any problem.
+#### The first dictionary will map an account name, which is unique, to a profile. This helps the users log in and make sure that two people with the same name can still use the program without any problem.
 
 #### The second dictionary is responsible for mapping the user's fullname to the user's account name. With the account name, we can get the profile via the first dictionary. Mapping the fullname to the account name will save much more storage than mapping the fullname directly to the profile, which takes up more space. Since the searching time for hashed dictionary is only O(1), there's no decrease in performance at all.
 
