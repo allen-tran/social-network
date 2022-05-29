@@ -1,16 +1,12 @@
-# Social Network 👥 - Terminal Social Media Program
+# Social Network 👥
 
-## About
-### The program uses a both a graph and hashed dictionary to simulate a social media CRUD program, where the users can create accounts, log in, find other users, make friends, post something, etc.
+<img width="511" alt=" 2022-05-29 at 4 00 18 PM" src="https://user-images.githubusercontent.com/63386979/170894665-0edb3fe7-69dc-4d08-828d-27578da01b4e.png">
 
-#### The first dictionary will map an account name, which is unique, to a profile. This helps the users log in and make sure that two people with the same name can still use the program without any problem.
-
-#### The second dictionary is responsible for mapping the user's fullname to the user's account name. With the account name, we can get the profile via the first dictionary. Mapping the fullname to the account name will save much more storage than mapping the fullname directly to the profile, which takes up more space. Since the searching time for hashed dictionary is only O(1), there's no decrease in performance at all.
+Terminal social media program that utilizes both a graph and hashed dictionary to simulate a social media app with CRUD features. Users can create accounts, log in, find other users, make friends, post something, and more. This was a final project conducted by a data structures class from De Anza College. The objective was to leverage advanced data structures to similuate connections with profiles and their respective friends.
 
 ## Tools Used 🔧
 - Backend: Java
 - Interface: Terminal with Java built-in libraries
-
 
 ## Running this Program Locally 🎮
 1. Clone the repository
@@ -27,8 +23,8 @@ $ java Driver.java
 - enter password
 
 
-## Demo Run 🏃🏻‍♂️
-Main screen<br>
+## Visuals ✨
+Main screen
 
 ![demo1](https://user-images.githubusercontent.com/83048295/131197358-afb27c25-3d38-4836-8f81-21cb64d0f2c6.png)
 
